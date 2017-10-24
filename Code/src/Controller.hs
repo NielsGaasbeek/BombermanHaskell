@@ -8,6 +8,7 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
 
+-- update bomb timers, let AI do actions
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
 step secs gstate
@@ -24,8 +25,19 @@ step secs gstate
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
+-- move, place bomb
 inputKey :: Event -> GameState -> GameState
 inputKey (EventKey (Char c) _ _ _) gstate
   = -- If the user presses a character key, show that one
     gstate { infoToShow = ShowAChar c }
 inputKey _ gstate = gstate -- Otherwise keep the same
+
+-- move
+
+-- place bomb
+
+-- update bomb
+
+-- explode bomb
+
+-- AI
