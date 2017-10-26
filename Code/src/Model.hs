@@ -1,63 +1,81 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Model where
 
-data LifeStatus = Alive | Dead
+import Control.Lens
+import Control.Lens.TH
+import Graphics.Gloss
+
+data LifeStatus = Alive | Dead deriving Show
 data GridPosition = GridPosition {
-                        xPos :: Int 
-                      , yPos :: Int
-                     }
-                     
-data GameObject = Player 
-                | Opponent 
-                | GridBlock 
-                | Bomb
+                        _xPos :: Int 
+                      , _yPos :: Int
+                     } deriving Show
+makeLenses ''GridPosition
 
 data Player = Player {
-                  gridPosition :: GridPosition
-                , lifeStatus :: LifeStatus
-                , bombAmount :: Int
-                , speedBoostTime :: Float
-                , sprite :: Picture
-                }
+                  _playerPos :: GridPosition
+                , playerStatus :: LifeStatus
+                , playerBombs :: Int
+                , playerSpeedBoostTime :: Float
+                , playerSprite :: [Picture]
+                } deriving Show
+makeLenses ''Player
                 
 data Opponent = Opponent {
-                  gridPosition :: GridPosition
-                , lifeStatus :: LifeStatus
-                , bombAmount :: Int
-                , speedBoostTime :: Float
-                , sprite :: Picture
-                }
+                  _oppPos :: GridPosition
+                , _oppStatus :: LifeStatus
+                , _oppBombs :: Int
+                , _oppSpeedBoostTime :: Float
+                , _oppSprite :: [Picture]
+                } deriving Show
+makeLenses ''Opponent
                 
 data Block = Wall
            | Box
            | FloorTile
 
 data GridBlock = GridBlock {
-                  blockPosition :: GridPosition
+                  _blockPosition :: GridPosition
                 , blockType :: Block
-                , sprite :: Picture
+                , blockSprite :: [Picture]
                 }
-                
+makeLenses ''GridBlock 
+               
 data Bomb = Bomb {
-                  timer :: Float
-                , bombPosition :: GridPosition
-                , sprite :: Picture
+                  _bombPosition :: GridPosition
+                , timer :: Float
+                , bombSprite :: [Picture]
                 }
+makeLenses ''Bomb
                 
 data PowerUpType = SpeedBoost
                  | ExtraBombs
                  
 data PowerUp = PowerUp {
-                  gridPosition :: GridPosition
+                  _powerUpPosistion :: GridPosition
                 , powerUpType :: PowerUpType
-                , sprite :: Picture
+                , powerUpSprite :: [Picture]
                 }
+makeLenses ''PowerUp
                 
-data GameMap = [[GridBlock]]
+type GameMap = [[GridBlock]]
 
 data GameState = GameState {
-                  player :: Player
-                , opponents :: [Opponent]
-                , bombs :: [Bomb]
+                  _player :: Player
+                , _opponents :: [Opponent]
+                , _bombs :: [Bomb]
                 , gameMap :: GameMap
                 , elapsedTime :: Float
                 }
+makeLenses ''GameState 
+               
+data MenuState = MainMenuState
+               | PauseMenuState
+               
+testPlayer = Player (GridPosition 1 1) Alive 3 0 []
+state = GameState testPlayer [] [] [[]] 0
+opp1 = Opponent (GridPosition 2 3) Alive 3 0 []
+opp2 = Opponent (GridPosition 3 3) Alive 3 0 []
+opp3 = Opponent (GridPosition 1 3) Alive 3 0 []
+state2 = GameState testPlayer [opp1,opp2,opp3] [] [[]] 0
